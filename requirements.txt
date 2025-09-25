@@ -2,3 +2,5 @@ flask
 flask_sqlalchemy
 click
 gunicorn
+psycopg2-binary
+flask-login
