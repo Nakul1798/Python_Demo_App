@@ -2,21 +2,147 @@
 <html>
 <head>
     <title>Task Manager</title>
+    <style>
+        /* Basic styling for a cleaner look */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        /* Large, prominent heading */
+        h1 {
+            font-size: 3em;
+            text-align: center;
+            margin-bottom: 40px;
+            color: #2c3e50;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Styling for the Add Task form */
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            flex-grow: 1;
+            max-width: 300px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Styling for the Task Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden; /* Ensures rounded corners are applied to table contents */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        th {
+            background-color: #2c3e50;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+
+        tr:hover {
+            background-color: #f7f9f9;
+        }
+
+        /* Styling for the Delete button link */
+        .delete-link {
+            color: #e74c3c;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            border: 1px solid #e74c3c;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .delete-link:hover {
+            background-color: #e74c3c;
+            color: white;
+        }
+    </style>
 </head>
 <body>
+    
     <h1>Task Manager</h1>
+
     <form method="POST" action="/add">
         <input type="text" name="title" placeholder="Task Title" required>
-        <input type="text" name="priority" placeholder="Priority (High/Low)" required>
-        <input type="text" name="deadline" placeholder="Deadline (YYYY-MM-DD)">
+        <input type="text" name="priority" placeholder="Priority (e.g., High, Low)" required>
+        <input type="text" name="deadline" placeholder="Deadline (e.g., YYYY-MM-DD)">
         <button type="submit">Add Task</button>
     </form>
-    <ul>
-        {% for task in tasks %}
-        <li>{{ task.title }} | {{ task.priority }} | {{ task.deadline }}
-            <a href="/delete/{{ task.id }}">Delete</a>
-        </li>
-        {% endfor %}
-    </ul>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Priority</th>
+                <th>Deadline</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td>{{ task.title }}</td>
+                <td>
+                    {% if task.priority|lower == 'high' %}
+                        <span style="color: #c0392b; font-weight: bold;">{{ task.priority }}</span>
+                    {% else %}
+                        {{ task.priority }}
+                    {% endif %}
+                </td>
+                <td>{{ task.deadline or 'N/A' }}</td>
+                <td>
+                    <a href="/delete/{{ task.id }}" class="delete-link">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+            {% if not tasks %}
+            <tr>
+                <td colspan="4" style="text-align: center; color: #7f8c8d;">No tasks found. Add a new one above!</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
 </body>
 </html>
