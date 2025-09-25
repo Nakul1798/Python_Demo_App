@@ -2,57 +2,89 @@
 <html>
 <head>
     <title>Task Manager</title>
-    <style>
-        /* Basic styling for a cleaner look */
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <style>
+        /* General Body Styling */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f4f4f4;
+            background: linear-gradient(135deg, #FFD700 0%, #FF8C00 100%); /* Warm, vibrant gradient */
+            background-attachment: fixed; /* Ensures gradient covers full height */
             color: #333;
+            min-height: 100vh; /* Ensures body takes full viewport height */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center content horizontally */
         }
 
-        /* Large, prominent heading */
+        /* Container for content to give it a white background amidst the gradient */
+        .container {
+            width: 100%;
+            max-width: 900px; /* Max width for readability */
+            background-color: rgba(255, 255, 255, 0.95); /* Slightly transparent white */
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Large, prominent heading with an icon */
         h1 {
-            font-size: 3em;
+            font-size: 3.5em; /* Even larger */
             text-align: center;
             margin-bottom: 40px;
-            color: #2c3e50;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            color: #2c3e50; /* Darker text for contrast */
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.15); /* More pronounced shadow */
+            display: flex; /* Allow icon and text to align */
+            align-items: center;
+            justify-content: center;
+            gap: 15px; /* Space between icon and text */
+            padding-top: 20px; /* Space from top of container */
+        }
+
+        h1 i {
+            color: #e67e22; /* Color for the icon */
+            font-size: 0.9em; /* Adjust icon size relative to text */
         }
 
         /* Styling for the Add Task form */
         form {
-            background: #fff;
+            background: #fdfdfd; /* Lighter background for the form */
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             margin-bottom: 30px;
             display: flex;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
             gap: 10px;
             justify-content: center;
         }
 
         input[type="text"] {
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 6px;
             flex-grow: 1;
-            max-width: 300px;
+            max-width: 250px; /* Slightly smaller input fields */
+            font-size: 1em;
         }
 
         button {
-            padding: 10px 15px;
-            background-color: #3498db;
+            padding: 12px 20px;
+            background-color: #27ae60; /* A fresh green for action */
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s ease;
+            font-size: 1em;
+            font-weight: bold;
         }
 
         button:hover {
-            background-color: #2980b9;
+            background-color: #219d55;
+            transform: translateY(-1px); /* Slight lift effect */
         }
 
         /* Styling for the Task Table */
@@ -61,26 +93,28 @@
             border-collapse: collapse;
             background: white;
             border-radius: 8px;
-            overflow: hidden; /* Ensures rounded corners are applied to table contents */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         th, td {
-            padding: 12px 15px;
+            padding: 15px 18px; /* More padding for better readability */
             text-align: left;
-            border-bottom: 1px solid #ecf0f1;
+            border-bottom: 1px solid #ebf0f1;
+            font-size: 0.95em;
         }
 
         th {
-            background-color: #2c3e50;
+            background-color: #34495e; /* Darker header background */
             color: white;
             font-weight: bold;
             text-transform: uppercase;
             font-size: 0.9em;
+            letter-spacing: 0.5px;
         }
 
         tr:hover {
-            background-color: #f7f9f9;
+            background-color: #f8fbfc;
         }
 
         /* Styling for the Delete button link */
@@ -88,61 +122,81 @@
             color: #e74c3c;
             text-decoration: none;
             font-weight: bold;
-            padding: 5px 10px;
+            padding: 6px 12px;
             border: 1px solid #e74c3c;
-            border-radius: 4px;
-            transition: all 0.3s;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
         }
 
         .delete-link:hover {
             background-color: #e74c3c;
             color: white;
+            box-shadow: 0 2px 5px rgba(231, 76, 60, 0.3);
+        }
+
+        /* Priority specific styling */
+        .priority-high {
+            color: #e74c3c; /* Red for high priority */
+            font-weight: bold;
+        }
+        .priority-medium {
+            color: #f39c12; /* Orange for medium priority */
+            font-weight: bold;
+        }
+        .priority-low {
+            color: #2ecc71; /* Green for low priority */
         }
     </style>
 </head>
 <body>
-    
-    <h1>Task Manager</h1>
+    <div class="container">
+        <h1><i class="fas fa-tasks"></i> Task Manager</h1>
 
-    <form method="POST" action="/add">
-        <input type="text" name="title" placeholder="Task Title" required>
-        <input type="text" name="priority" placeholder="Priority (e.g., High, Low)" required>
-        <input type="text" name="deadline" placeholder="Deadline (e.g., YYYY-MM-DD)">
-        <button type="submit">Add Task</button>
-    </form>
+        <form method="POST" action="/add">
+            <input type="text" name="title" placeholder="Task Title" required>
+            <input type="text" name="priority" placeholder="Priority (e.g., High, Medium, Low)" required>
+            <input type="text" name="deadline" placeholder="Deadline (YYYY-MM-DD)">
+            <button type="submit">Add Task</button>
+        </form>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Priority</th>
-                <th>Deadline</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for task in tasks %}
-            <tr>
-                <td>{{ task.title }}</td>
-                <td>
-                    {% if task.priority|lower == 'high' %}
-                        <span style="color: #c0392b; font-weight: bold;">{{ task.priority }}</span>
-                    {% else %}
-                        {{ task.priority }}
-                    {% endif %}
-                </td>
-                <td>{{ task.deadline or 'N/A' }}</td>
-                <td>
-                    <a href="/delete/{{ task.id }}" class="delete-link">Delete</a>
-                </td>
-            </tr>
-            {% endfor %}
-            {% if not tasks %}
-            <tr>
-                <td colspan="4" style="text-align: center; color: #7f8c8d;">No tasks found. Add a new one above!</td>
-            </tr>
-            {% endif %}
-        </tbody>
-    </table>
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Priority</th>
+                    <th>Deadline</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                <tr>
+                    <td>{{ task.title }}</td>
+                    <td>
+                        {% if task.priority|lower == 'high' %}
+                            <span class="priority-high">{{ task.priority }}</span>
+                        {% elif task.priority|lower == 'medium' %}
+                            <span class="priority-medium">{{ task.priority }}</span>
+                        {% elif task.priority|lower == 'low' %}
+                            <span class="priority-low">{{ task.priority }}</span>
+                        {% else %}
+                            {{ task.priority }}
+                        {% endif %}
+                    </td>
+                    <td>{{ task.deadline or 'N/A' }}</td>
+                    <td>
+                        <a href="/delete/{{ task.id }}" class="delete-link">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not tasks %}
+                <tr>
+                    <td colspan="4" style="text-align: center; color: #7f8c8d; font-style: italic;">No tasks found. Get started by adding a new task!</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
